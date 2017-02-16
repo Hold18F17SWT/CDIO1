@@ -41,6 +41,9 @@ local.properties
 .idea/dictionaries
 .idea/vcs.xml
 .idea/jsLibraryMappings.xml
+.idea/dbnavigator.xml
+.idea/checkstyle-idea.xml
+
 
 # Sensitive or high-churn files:
 .idea/dataSources.ids
