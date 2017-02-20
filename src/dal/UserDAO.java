@@ -13,7 +13,7 @@ import java.util.List;
 
 public class UserDAO implements IUserDAO {
 
-    private String fileName = "resources/data.ser";
+    private String fileName = "resources/data.dat";
 
     @Override
     public UserDTO getUser(int userId) throws DALException {
