@@ -20,6 +20,7 @@ public class crud {
             System.out.println("3. Find en bruger");
             System.out.println("4. Opdatér en bruger");
             System.out.println("5. Slet en bruger");
+            System.out.println("6. Afslut program");
             System.out.println("Hvad vil du?");
             int choice = sc.nextInt();
             //
@@ -34,8 +35,9 @@ public class crud {
                     break;
                 case 5: deleteUserMenu();
                     break;
+                case 6: System.exit(1);
+                    break;
             }
-
         }
     }
 
@@ -54,6 +56,55 @@ public class crud {
 
     private static void updateUserMenu() {
         System.out.println("--OPDATÉR BRUGER--");
+        System.out.println("Indtast ID for bruger, der skal ændres:");
+        int id = sc.nextInt();
+
+        try {
+            UserDTO user = dao.getUser(id);
+            System.out.println(user.toString());
+            boolean loopDisShit = true;
+
+            while (loopDisShit){
+                System.out.println("--VÆLG --");
+                System.out.println("1. Navn");
+                System.out.println("2. Initialer");
+                System.out.println("3. Cpr-nummer");
+                System.out.println("4. Password");
+                System.out.println("5. Tilføj rolle");
+                System.out.println("6. Fjern rolle");
+                System.out.println("7. Tilbage til menu");
+                int choice = sc.nextInt();
+                //
+                switch(choice){
+                    case 1: System.out.println("Indtast nyt navn:");
+                        user.setUserName(sc.next());
+                        break;
+                    case 2: System.out.println("Indtast nye initialer:");
+                        user.setIni(sc.next());
+                        break;
+                    case 3: System.out.println("Indtast nyt cpr-nummer:");
+                        user.setCpr(sc.next());
+                        break;
+                    case 4: System.out.println("Indtast nyt password:");
+                        user.setPassword(sc.next());
+                        break;
+                    case 5: System.out.println("Indtast ny rolle:");
+                        user.addRole(sc.next());
+                        break;
+                    case 6: System.out.println("Indtast rolle, der skal fjernes:");
+                        user.removeRole(sc.next());
+                        break;
+                    case 7: loopDisShit = false;
+                        break;
+                }
+                dao.updateUser(user);
+            }
+        } catch (IUserDAO.DALException e) {
+            System.out.println(e.getMessage());
+        }
+
+/*        System.out.println("Vælg rolle:");
+        String role = roleMenu();
         System.out.println("Hvad er id'et på den bruger du vil opdatere?");
         int id = sc.nextInt();
         System.out.println("indtast nyt navn:");
@@ -75,7 +126,7 @@ public class crud {
             System.out.println("Bruger blev opdateret");
         } catch (IUserDAO.DALException e) {
             System.out.println(e.getMessage());
-        }
+        }*/
     }
 
     private static void findUserMenu() {
@@ -106,9 +157,9 @@ public class crud {
         }
     }
 
-    public static void createUserMenu(){
+    private static void createUserMenu(){
         System.out.println("--OPRET BRUGER--");
-        System.out.println("indtast ønsket id mellem 11 og 99:");
+        System.out.println("indtast ønsket ID mellem 1 og 99:");
         int id = sc.nextInt();
         System.out.println("indtast navn:");
         String name = sc.next();
@@ -116,16 +167,31 @@ public class crud {
         String ini = sc.next();
         System.out.println("indtast cpr-nummer:");
         String cpr = sc.next();
-
-
-        UserDTO newUser = new UserDTO(id, name, ini, cpr);
+        System.out.println("Vælg rolle:");
+        String role = roleMenu();
 
         try {
-            dao.createUser(newUser);
+            dao.createUser(new UserDTO(id, name, ini, cpr, role));
             System.out.println("Bruger blev oprettet");
         } catch (IUserDAO.DALException e) {
             System.out.println(e.getMessage());
         }
+    }
 
+    public static String roleMenu() {
+        System.out.println("1. Admin");
+        System.out.println("2. Pharmacist");
+        System.out.println("3. Foreman");
+        System.out.println("4. Operator");
+
+        int choice = sc.nextInt();
+
+        switch(choice) {
+            case 1: return "Admin";
+            case 2: return "Pharmacist";
+            case 3: return "Foreman";
+            case 4: return "Operator";
+        }
+        return "UNKNOWN";
     }
 }

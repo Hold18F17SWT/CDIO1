@@ -12,7 +12,7 @@ public class DBTester {
 	//TODO refactor as JUnit test???
 	public static void main(String[] args) {
 		IUserDAO iDAO = new UserDAODiscImpl();
-		UserDTO newUser = new UserDTO(1, "","","");
+		UserDTO newUser = new UserDTO(1, "","","", "");
 		printUsers(iDAO);
 		//TODO test new fields...
 		newUser.setIni("test");

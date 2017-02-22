@@ -14,13 +14,14 @@ public class UserDTO implements Serializable{
 	private String password;
 	private List<String> roles;
 	
-	public UserDTO(int userId, String userName, String ini, String cpr) {
+	public UserDTO(int userId, String userName, String ini, String cpr, String role) {
 		this.userId = userId;
 		this.userName = userName;
 		this.ini = ini;
 		this.cpr = cpr;
 		this.password = generateRandomPassword();
-		this.roles = new ArrayList<>();
+        this.roles = new ArrayList<>();
+		this.roles.add(role);
 	}
 	
 	public int getUserId() {
@@ -75,7 +76,7 @@ public class UserDTO implements Serializable{
 		this.roles.add(role);
 	}
 	/**
-	 * 
+	 *
 	 * @param role
 	 * @return true if role existed, false if not
 	 */
