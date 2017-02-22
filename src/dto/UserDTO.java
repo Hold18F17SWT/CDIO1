@@ -10,11 +10,16 @@ public class UserDTO implements Serializable{
 	private int	userId;                     
 	private String userName;                
 	private String ini;
-	private int cpr;
+	private String cpr;
 	private String password;
 	private List<String> roles;
 	
-	public UserDTO() {
+	public UserDTO(int userId, String userName, String ini, String cpr) {
+		this.userId = userId;
+		this.userName = userName;
+		this.ini = ini;
+		this.cpr = cpr;
+		this.password = generateRandomPassword();
 		this.roles = new ArrayList<>();
 	}
 	
@@ -42,11 +47,11 @@ public class UserDTO implements Serializable{
 		this.ini = ini;
 	}
 
-    public int getCpr() {
+    public String getCpr() {
         return cpr;
     }
 
-    public void setCpr(int cpr) {
+    public void setCpr(String cpr) {
         this.cpr = cpr;
     }
 
@@ -82,7 +87,24 @@ public class UserDTO implements Serializable{
 	public String toString() {
 		return "UserDTO [userId=" + userId + ", userName=" + userName + ", ini=" + ini + ", cpr=" + cpr + ", password=" + password + ", roles=" + roles + "]";
 	}
-	
-	
-	
+
+	// mindst 6 tegn
+	// brug mindst 3 af de fire kategorier
+	private String generateRandomPassword(){
+		char[] upper = (new String("abcdefghijklmnopqrstuvwxyzæøå")).toCharArray();
+		char[] lower = (new String("ABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ")).toCharArray();
+		char[] numbers = (new String("0123456789")).toCharArray();
+		char[] special = (new String(".-_+!?=")).toCharArray();
+
+		String password = "";
+
+		for (int i = 0; i <= 4; i++) {
+			password+=upper[(int) (Math.random()*upper.length)];
+			password+=lower[(int) (Math.random()*lower.length)];
+			password+=numbers[(int) (Math.random()*numbers.length)];
+			password+=special[(int) (Math.random()*special.length)];
+		}
+
+		return password;
+	}
 }
