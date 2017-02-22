@@ -1,18 +1,16 @@
 import dal.IUserDAO;
 import dal.UserDAODiscImpl;
+import dal.UserDAOMemory;
 import dto.UserDTO;
 
 import java.util.List;
 import java.util.Scanner;
 
-/**
- * Created by emilbonnekristiansen on 20/02/2017.
- */
 public class crud {
     private static IUserDAO dao;
     private static Scanner sc;
     public static void main(String[] args){
-        dao = new UserDAODiscImpl();
+        dao = new UserDAOMemory();
         sc = new Scanner(System.in);
         while (true){
             // Udskriv default Menu:
