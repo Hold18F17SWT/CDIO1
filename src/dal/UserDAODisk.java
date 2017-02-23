@@ -48,7 +48,7 @@ public class UserDAODisk implements IUserDAO {
             users.addUser(user);
             this.saveUsers(users);
         }
-        catch (DALException e) {
+        catch (DTOStore.UserAlreadyExistsException e) {
             throw new DALException("User already exists");
         }
     }
@@ -61,7 +61,11 @@ public class UserDAODisk implements IUserDAO {
 
         if (userOLD != null) {
             users.getUsers().remove(userOLD.getUserId());
-            users.addUser(user);
+            try {
+                users.addUser(user);
+            } catch (DTOStore.UserAlreadyExistsException e) {
+                //Do nothing
+            }
             this.saveUsers(users);
         }
         else

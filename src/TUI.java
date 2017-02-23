@@ -10,9 +10,11 @@ import java.util.Scanner;
 public class TUI {
     private static IUserDAO dao;
     private static Scanner sc;
+
     public static void main(String[] args){
         dao = new UserDAODisk();
         sc = new Scanner(System.in);
+
         while (true){
             // Udskriv default Menu:
             System.out.println("--HOVEDMENU--");
@@ -23,7 +25,8 @@ public class TUI {
             System.out.println("5. Slet en bruger");
             System.out.println("6. Afslut program");
             System.out.println("Hvad vil du?");
-            int choice = sc.nextInt();
+
+                int choice = sc.nextInt();
             //
             switch(choice){
                 case 1: createUserMenu();

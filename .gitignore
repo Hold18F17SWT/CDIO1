@@ -67,3 +67,5 @@ local.properties
 
 # mpeltonen/sbt-idea plugin
 .idea_modules/
+/users.data
+/.idea/vcs.xml

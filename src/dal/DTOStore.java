@@ -21,11 +21,20 @@ public class DTOStore implements Serializable {
         return this.users.get(userID);
     }
 
-    public void addUser(UserDTO user) {
-        this.users.put(user.getUserId(), user);
+    public void addUser(UserDTO user) throws UserAlreadyExistsException {
+        if (!this.users.containsKey(user.getUserId()))
+            this.users.put(user.getUserId(), user);
+        else
+            throw new UserAlreadyExistsException();
     }
 
     public void setUsers(Map<Integer, UserDTO> users) {
         this.users = users;
+    }
+
+    public class UserAlreadyExistsException extends Exception {
+        public UserAlreadyExistsException() {
+
+        }
     }
 }
