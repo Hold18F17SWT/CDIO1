@@ -19,7 +19,7 @@ public class UserDTO implements Serializable{
 		this.userName = userName;
 		this.ini = ini;
 		this.cpr = cpr;
-		this.password = "Tilfældig string";
+		this.password = generateRandomPassword();
 		this.roles = new ArrayList<>();
 	}
 	
@@ -88,5 +88,23 @@ public class UserDTO implements Serializable{
 		return "UserDTO [userId=" + userId + ", userName=" + userName + ", ini=" + ini + ", cpr=" + cpr + ", password=" + password + ", roles=" + roles + "]";
 	}
 
-	
+	// mindst 6 tegn
+	// brug mindst 3 af de fire kategorier
+	private String generateRandomPassword(){
+		char[] upper = (new String("abcdefghijklmnopqrstuvwxyzæøå")).toCharArray();
+		char[] lower = (new String("ABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ")).toCharArray();
+		char[] numbers = (new String("0123456789")).toCharArray();
+		char[] special = (new String(".-_+!?=")).toCharArray();
+
+		String password = "";
+
+		for (int i = 0; i <= 4; i++) {
+			password+=upper[(int) (Math.random()*upper.length)];
+			password+=lower[(int) (Math.random()*lower.length)];
+			password+=numbers[(int) (Math.random()*numbers.length)];
+			password+=special[(int) (Math.random()*special.length)];
+		}
+
+		return password;
+	}
 }
