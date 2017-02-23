@@ -4,9 +4,8 @@ package test;
 import java.util.List;
 
 //CLASSES IMPORT
-import dal.IUserDAO;
 import dal.IUserDAO.DALException;
-import dal.UserDAODiscImpl;
+import dal.UserDAOMemory;
 import dto.UserDTO;
 
 //JUNIT4 IMPORTS
@@ -17,17 +16,23 @@ import org.junit.After;
 
 
 public class DBTester {
-	private UserDTO User1 = new UserDTO(1,"", "", "");
-	private UserDTO User2_Admin = new UserDTO(1,"", "", "");
-	private UserDTO User3 = new UserDTO(1,"", "", "");
+	private UserDTO User1;
+	private UserDTO User2_Admin;
+	private UserDTO User3;
 
-	private IUserDAO iDAO = new UserDAODiscImpl();
-
-
+	private UserDAOMemory iDAO = new UserDAOMemory();
 
 	@Before
 	public void setUp() throws Exception {
-		User1.setIni("test");
+	    User1 = new UserDTO(1,"","","");
+        User2_Admin = new UserDTO(1,"","","");
+        User3 = new UserDTO(1,"","","");
+
+        iDAO.createUser(User1);
+        iDAO.createUser(User2_Admin);
+        iDAO.createUser(User3);
+
+        User1.setIni("test");
 		User1.setUserId(0);
 		User1.setUserName("Bjarne");
 		User1.setCpr("12345678-9012");
@@ -43,73 +48,67 @@ public class DBTester {
 		User3.setUserName("Bjarne1");
 		User3.setCpr("12345678-9014");
 
-		iDAO.createUser(User1);
-		iDAO.createUser(User2_Admin);
-		iDAO.createUser(User3);
 	}
 
 	@Test
 	public void testEntities(){
-
 		Assert.assertNotNull(this.User1);
 		Assert.assertNotNull(this.User2_Admin);
 		Assert.assertNotNull(this.User3);
 
 		printUsers(iDAO);
-
+		System.out.println("All users are instantiated");
 	}
+
 	@Test(expected = DALException.class)
 	public void testUserAlreadyExsits() {
+        System.out.print("\n");
+        printUsers(iDAO);
 		try {
-			iDAO.createUser(User1);
-		} catch (DALException e1){
-		Assert.assertTrue(e1.getMessage().equals("User already exists!"));
+            iDAO.createUser(User1);
+            System.out.println("Making new player");
+            System.out.print("\n");
+            printUsers(iDAO);
+            System.out.println("TODO");
+            System.out.println("DOES NOT STOP THE SAME PLAYER FROM BEING CREATED");
+        } catch (DALException e1){
+        Assert.assertTrue(e1 instanceof DALException && e1.getMessage().equals("User already exists!"));
 		}
 	}
 
-/*
-	public static void main(String[] args) {
-		//TODO test new fields...
+	@Test
+    public void testDeleteUser(){
+        System.out.print("\n");
+        try {
+            System.out.println("Trying to delete userID 0");
+            iDAO.deleteUser(0);
+            printUsers(iDAO);
+            System.out.println("Deleted userID 0");
+        } catch (DALException e){
+            System.out.println("UserID 0 does not exists.");
+        }
+    }
 
-		//throw error if user already exsists
-		try {
-			iDAO.createUser(newUser);
-		} catch (DALException e1) {
-			System.out.println("User already existed - OK");
-		}
+    @Test
+    public void testChangeUser(){
+        System.out.print("\n");
+        System.out.println("Default list of users");
+        printUsers(iDAO);
+        User1.setUserName("Birke");
+        User1.setPassword("password123");
+        System.out.print("\n");
+        try {
+            iDAO.updateUser(User1);
+            System.out.println("Update username and password for userID 0");
+        } catch (DALException e){
 
-		//create new user
-		newUser.setUserId(1);
-		newUser.setUserName("2ND user");
-		try {
-			iDAO.createUser(newUser);
-		} catch (DALException e1) {
-			e1.printStackTrace();
-		}
-		printUsers(iDAO);
-		newUser.setUserId(0);
-		newUser.setUserName("ModifiedName");
-		try {
-			iDAO.updateUser(newUser);
-		} catch (DALException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		printUsers(iDAO);
-		
-		try {
-			iDAO.deleteUser(1);
-		} catch (DALException e) {
-			e.printStackTrace();
-		}
-		
-		printUsers(iDAO);
+        }
+        printUsers(iDAO);
+        System.out.println("User1 has been updated");
 
-	}
-*/
+    }
 	//Change to new arrayList
-	private static void printUsers(IUserDAO iDAO) {
+	private static void printUsers(UserDAOMemory iDAO) {
 		try {
 			System.out.println("Printing users...");
 			List<UserDTO> userList = iDAO.getUserList();
@@ -120,11 +119,6 @@ public class DBTester {
 		} catch (DALException e) {
 			e.printStackTrace();
 		}
-	}
-
-	@After
-public void tearDown() throws Exception{
-
 	}
 
 }
