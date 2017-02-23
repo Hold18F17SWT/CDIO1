@@ -1,16 +1,17 @@
 import dal.IUserDAO;
 import dal.UserDAODiscImpl;
+import dal.UserDAODisk;
 import dal.UserDAOMemory;
 import dto.UserDTO;
 
 import java.util.List;
 import java.util.Scanner;
 
-public class crud {
+public class TUI {
     private static IUserDAO dao;
     private static Scanner sc;
     public static void main(String[] args){
-        dao = new UserDAOMemory();
+        dao = new UserDAODisk();
         sc = new Scanner(System.in);
         while (true){
             // Udskriv default Menu:
@@ -74,7 +75,7 @@ public class crud {
                 System.out.println("6. Fjern rolle");
                 System.out.println("7. Tilbage til menu");
                 int choice = sc.nextInt();
-                //
+
                 switch(choice){
                     case 1: System.out.println("Indtast nyt navn:");
                         user.setUserName(sc.next());
@@ -130,8 +131,8 @@ public class crud {
     }
 
     private static void findUserMenu() {
-        System.out.println("--FIND BRUGER--");
-        System.out.println("Hvad er id'et på den bruger du vil finde?");
+        System.out.println("--FIND BURGER--");
+        System.out.println("Hvad er id'et på den burger du vil finde?");
         int id = sc.nextInt();
 
         try {
@@ -143,7 +144,7 @@ public class crud {
     }
 
     private static void listUsersMenu() {
-        System.out.println("--SE ALLE BRUGERE--");
+        System.out.println("--SE ALLE BURGERE--");
         List users = null;
 
         try {
@@ -158,12 +159,12 @@ public class crud {
     }
 
     private static void createUserMenu(){
-        System.out.println("--OPRET BRUGER--");
+        System.out.println("--OPRET BURGER--");
         System.out.println("indtast ønsket ID mellem 1 og 99:");
         int id = sc.nextInt();
         System.out.println("indtast navn:");
         String name = sc.next();
-        System.out.println("indtast initial:");
+        System.out.println("indtast initialer:");
         String ini = sc.next();
         System.out.println("indtast cpr-nummer:");
         String cpr = sc.next();
@@ -172,17 +173,17 @@ public class crud {
 
         try {
             dao.createUser(new UserDTO(id, name, ini, cpr, role));
-            System.out.println("Bruger blev oprettet");
+            System.out.println("Burger blev oprettet");
         } catch (IUserDAO.DALException e) {
             System.out.println(e.getMessage());
         }
     }
 
-    public static String roleMenu() {
-        System.out.println("1. Admin");
-        System.out.println("2. Pharmacist");
-        System.out.println("3. Foreman");
-        System.out.println("4. Operator");
+    private static String roleMenu() {
+        System.out.println("1. Big Mac");
+        System.out.println("2. Hamburger");
+        System.out.println("3. Cheeseburger");
+        System.out.println("4. Dobbelt Big Mac");
 
         int choice = sc.nextInt();
 
