@@ -4,6 +4,7 @@ import dto.UserDTO;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import java.io.FileOutputStream;
 import java.io.FileInputStream;
@@ -13,11 +14,13 @@ import java.io.ObjectInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-
-
-// HER SKAL IMPLEMENTERES EN VERSION AF IUSERDAO DER BRUGER DISK
 public class UserDAODisk implements IUserDAO {
-    private final String fileName ="Users.data";
+    private String fileName ="Users.data";
+
+    public void setFileName(String newFileName) {
+        // For testing purposes... for now
+        this.fileName = newFileName;
+    }
 
     @Override
     public UserDTO getUser(int userId) throws DALException {
@@ -58,14 +61,10 @@ public class UserDAODisk implements IUserDAO {
         DTOStore users = this.loadUsers();
         UserDTO userOLD = users.getUser(user.getUserId());
 
-
         if (userOLD != null) {
-            users.getUsers().remove(userOLD.getUserId());
-            try {
-                users.addUser(user);
-            } catch (DTOStore.UserAlreadyExistsException e) {
-                //Do nothing
-            }
+            Map mappedUsers = users.getUsers();
+            mappedUsers.put(user.getUserId(), user);
+            users.setUsers(mappedUsers);
             this.saveUsers(users);
         }
         else
@@ -75,13 +74,22 @@ public class UserDAODisk implements IUserDAO {
     @Override
     public void deleteUser(int userId) throws DALException {
         DTOStore users = this.loadUsers();
+        Map mappedUsers = users.getUsers();
 
-        if (users.getUsers().containsKey(userId)) {
-            users.getUsers().remove(userId);
+        if (mappedUsers.containsKey(userId)) {
+            mappedUsers.remove(userId);
+            users.setUsers(mappedUsers);
             this.saveUsers(users);
         }
         else
             throw new DALException("User doesn't exist");
+    }
+
+    public void clearDataBase() throws DALException {
+        DTOStore users = this.loadUsers();
+
+            users.getUsers().clear();
+            this.saveUsers(users);
     }
 
     private DTOStore loadUsers() throws DALException {
@@ -103,7 +111,7 @@ public class UserDAODisk implements IUserDAO {
         } catch (ClassNotFoundException e) {
             throw new DALException("Error while reading file - Class not found!", e);
         } finally {
-            if (oIS!=null){
+            if (oIS != null){
                 try {
                     oIS.close();
                 } catch (IOException e) {
@@ -125,7 +133,7 @@ public class UserDAODisk implements IUserDAO {
         } catch (IOException e) {
             throw new DALException("Error writing to disk", e);
         } finally {
-            if (oOS!=null) {
+            if (oOS != null) {
                 try {
                     oOS.close();
                 } catch (IOException e) {
