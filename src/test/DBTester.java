@@ -2,95 +2,108 @@ package test;
 
 //UTIL IMPORT
 import java.util.List;
+import java.util.zip.DataFormatException;
 
 //CLASSES IMPORT
+import dal.DTOStore;
+import dal.IUserDAO;
 import dal.IUserDAO.DALException;
-import dal.UserDAOMemory;
+import dal.UserDAODisk;
+//import dal.UserDAOMemory;
 import dto.UserDTO;
 
 //JUNIT4 IMPORTS
-import org.junit.Test;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.After;
+import org.junit.*;
+//import org.junit.After;
 
 
 public class DBTester {
-	private UserDTO User1;
-	private UserDTO User2_Admin;
-	private UserDTO User3;
+    private UserDTO User1;
+    private UserDTO User2_Admin;
+    private UserDTO User3;
 
-	private UserDAOMemory iDAO = new UserDAOMemory();
+    private UserDAODisk iDAO = new UserDAODisk();
 
-	@Before
-	public void setUp() throws Exception {
-	    User1 = new UserDTO(1,"","","");
-        User2_Admin = new UserDTO(1,"","","");
-        User3 = new UserDTO(1,"","","");
+    @Before
+    public void setUp() throws Exception {
+
+        iDAO.setFileName("test.data");
+
+        User1 = new UserDTO(11,"","","", "");
+        User2_Admin = new UserDTO(22,"","","", "");
+        User3 = new UserDTO(33,"","","", "");
 
         iDAO.createUser(User1);
         iDAO.createUser(User2_Admin);
         iDAO.createUser(User3);
 
         User1.setIni("test");
-		User1.setUserId(0);
-		User1.setUserName("Bjarne");
-		User1.setCpr("12345678-9012");
+        User1.setUserName("Bjarne");
+        User1.setCpr("12345678-9012");
+        iDAO.updateUser(User1);
 
-		User2_Admin.setIni("test");
-		User2_Admin.addRole("Admin");
-		User2_Admin.setUserId(1);
-		User2_Admin.setCpr("12345678-9013");
-		User2_Admin.setUserName("AdminMan");
+        User2_Admin.setIni("test");
+        User2_Admin.addRole("Admin");
+        User2_Admin.setCpr("12345678-9013");
+        User2_Admin.setUserName("AdminMan");
+        iDAO.updateUser(User2_Admin);
 
-		User3.setIni("test");
-		User3.setUserId(2);
-		User3.setUserName("Bjarne1");
-		User3.setCpr("12345678-9014");
+        User3.setIni("test");
+        User3.setUserName("Bjarne1");
+        User3.setCpr("12345678-9014");
+        iDAO.updateUser(User3);
+    }
 
-	}
+    @After
+    public void tearDown() throws Exception {
+        iDAO.clearDataBase();
+    }
 
-	@Test
-	public void testEntities(){
-		Assert.assertNotNull(this.User1);
-		Assert.assertNotNull(this.User2_Admin);
-		Assert.assertNotNull(this.User3);
+    @Test
+    public void testEntities(){
+        Assert.assertNotNull(User1);
+        Assert.assertNotNull(User2_Admin);
+        Assert.assertNotNull(User3);
 
-		printUsers(iDAO);
-		System.out.println("All users are instantiated");
-	}
+        printUsers(iDAO);
+        System.out.println("All users were instantiated");
+    }
 
-	@Test(expected = DALException.class)
-	public void testUserAlreadyExsits() {
+    @Test
+    public void testUserAlreadyExists() {
         System.out.print("\n");
         printUsers(iDAO);
-		try {
+        boolean thrown = false;
+        try {
             iDAO.createUser(User1);
-            System.out.println("Making new player");
+            System.out.println("Making new instance of user that already exists");
             System.out.print("\n");
             printUsers(iDAO);
-            System.out.println("TODO");
-            System.out.println("DOES NOT STOP THE SAME PLAYER FROM BEING CREATED");
-        } catch (DALException e1){
-        Assert.assertTrue(e1 instanceof DALException && e1.getMessage().equals("User already exists!"));
-		}
-	}
+        }
+        catch (DALException e) {
+            System.out.println(e.getMessage());
+            thrown = true;
+        }
+        Assert.assertTrue(thrown);
+    }
 
-	@Test
+    @Test
     public void testDeleteUser(){
         System.out.print("\n");
         try {
-            System.out.println("Trying to delete userID 0");
-            iDAO.deleteUser(0);
+            System.out.println("Trying to delete userID 22");
+            iDAO.deleteUser(22);
             printUsers(iDAO);
-            System.out.println("Deleted userID 0");
-        } catch (DALException e){
-            System.out.println("UserID 0 does not exists.");
+            Assert.assertNull(iDAO.getUser(22));
+            System.out.println("Deleted userID 22");
+        }
+        catch (DALException e){
+            System.out.println(e.getMessage());
         }
     }
 
     @Test
-    public void testChangeUser(){
+    public void testChangeUserDetails(){
         System.out.print("\n");
         System.out.println("Default list of users");
         printUsers(iDAO);
@@ -99,26 +112,25 @@ public class DBTester {
         System.out.print("\n");
         try {
             iDAO.updateUser(User1);
-            System.out.println("Update username and password for userID 0");
-        } catch (DALException e){
-
+            System.out.println("Update username and password for userID 11");
+        }
+        catch (DALException e){
+            System.out.println(e.getMessage());
         }
         printUsers(iDAO);
         System.out.println("User1 has been updated");
-
     }
-	//Change to new arrayList
-	private static void printUsers(UserDAOMemory iDAO) {
-		try {
-			System.out.println("Printing users...");
-			List<UserDTO> userList = iDAO.getUserList();
-			for (UserDTO userDTO : userList) {
-				System.out.println(userDTO);
-			}
 
-		} catch (DALException e) {
-			e.printStackTrace();
-		}
-	}
-
+    private static void printUsers(UserDAODisk iDAO) {
+        try {
+            System.out.println("Printing users...");
+            List<UserDTO> userList = iDAO.getUserList();
+            for (UserDTO userDTO : userList) {
+                System.out.println(userDTO);
+            }
+        }
+        catch (DALException e) {
+            e.printStackTrace();
+        }
+    }
 }
