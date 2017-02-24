@@ -16,11 +16,11 @@ import java.io.IOException;
 
 public class UserDAODisk implements IUserDAO {
     private static String currentPath = System.getProperty("user.dir");
-    private static String fileName = currentPath + "/data.dat";
+    private String fileName = currentPath + "/data.dat";
 
     public void setFileName(String newFileName) {
         // For testing purposes... for now
-        fileName = currentPath + newFileName;
+        this.fileName = currentPath + newFileName;
     }
 
     @Override
