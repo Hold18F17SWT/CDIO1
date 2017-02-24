@@ -73,7 +73,10 @@ public class UserDTO implements Serializable{
 	}
 	
 	public void addRole(String role){
-		this.roles.add(role);
+		if (!this.getRoles().contains(role))
+			this.roles.add(role);
+		else
+			System.out.println("Role already added to user");
 	}
 	/**
 	 *

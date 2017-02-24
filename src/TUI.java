@@ -4,6 +4,7 @@ import dto.UserDTO;
 
 import java.util.List;
 import java.util.Scanner;
+import java.util.function.Predicate;
 
 public class TUI {
     private static IUserDAO dao;
@@ -96,11 +97,11 @@ public class TUI {
                 case 4: System.out.println("Indtast nyt password:");
                     user.setPassword(sc.next());
                     break;
-                case 5: System.out.println("Indtast ny rolle:");
-                    user.addRole(sc.next());
+                case 5: System.out.println("Vælg ny rolle:");
+                    user.addRole(roleMenu());
                     break;
-                case 6: System.out.println("Indtast rolle, der skal fjernes:");
-                    user.removeRole(sc.next());
+                case 6: System.out.println("Vælg rolle, der skal fjernes:");
+                    user.removeRole(roleMenu());
                     break;
                 case 7: loopDisShit = false;
                     break;
@@ -155,7 +156,7 @@ public class TUI {
         System.out.println("Indtast CPR-nummer:");
         String cpr = sc.next();
         System.out.println("Indtast rolle");
-        String role = sc.next();
+        String role = roleMenu();
 
         try {
             dao.createUser(new UserDTO(id, name, ini, cpr, role));
