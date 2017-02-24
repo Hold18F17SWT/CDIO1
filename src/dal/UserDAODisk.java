@@ -15,11 +15,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class UserDAODisk implements IUserDAO {
-    private String fileName ="Users.data";
+    private static String currentPath = System.getProperty("user.dir");
+    private String fileName = currentPath + "/data.dat";
 
     public void setFileName(String newFileName) {
         // For testing purposes... for now
-        this.fileName = newFileName;
+        this.fileName = currentPath + newFileName;
     }
 
     @Override

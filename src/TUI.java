@@ -1,7 +1,5 @@
 import dal.IUserDAO;
-import dal.UserDAODiscImpl;
 import dal.UserDAODisk;
-import dal.UserDAOMemory;
 import dto.UserDTO;
 
 import java.util.List;
